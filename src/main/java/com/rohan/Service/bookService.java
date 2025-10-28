@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.rohan.Dto.bookDto;
+import com.rohan.Dto.bookResponseDto;
 import com.rohan.Entity.bookEntity;
 import com.rohan.Mapper.bookMapper;
 import com.rohan.Repo.bookRepo;
@@ -40,11 +41,24 @@ public class bookService {
 	}
 	
 	//get all book in sorting & pagination manner
-	public List<bookDto> getAllBooks(int page,int size,String sortby)
+	public bookResponseDto getAllBooks(int page,int size,String sortby)
 	{
 		Pageable pageable=PageRequest.of(page, size, Sort.by(sortby));
 		Page<bookEntity> all = bookrepo.findAll(pageable);
-		return all.stream().map(bookMapper::toDto).collect(Collectors.toList());
+		List<bookDto> collect = all.stream().map(bookMapper::toDto).collect(Collectors.toList());
+		 
+		
+		bookResponseDto bookresponse=new bookResponseDto();
+		bookresponse.setContent(collect);
+		bookresponse.setLastPage(all.isLast());
+		bookresponse.setPageNumber(all.getNumber());
+		bookresponse.setTotalElements(all.getTotalElements());
+		bookresponse.setTotalPages(all.getTotalPages());
+		
+		return bookresponse;
+		 
+		
+		 
 	}
 	
 	//updateBook

@@ -13,7 +13,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name="bookHistory")
-public class borrowRecord {
+public class borrowRecordEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

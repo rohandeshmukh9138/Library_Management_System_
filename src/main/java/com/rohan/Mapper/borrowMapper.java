@@ -4,14 +4,14 @@ import java.time.LocalDate;
 
 import com.rohan.Dto.borrowRecordDto;
 import com.rohan.Entity.bookEntity;
-import com.rohan.Entity.borrowRecord;
+import com.rohan.Entity.borrowRecordEntity;
 import com.rohan.Entity.memberEntity;
 
 public class borrowMapper {
 	
 	
 	
-	public static borrowRecordDto toDto(borrowRecord borrowrecord)
+	public static borrowRecordDto toDto(borrowRecordEntity borrowrecord)
 	{
 		borrowRecordDto borrowrecordDto=new borrowRecordDto();
 		borrowrecordDto.setId(borrowrecord.getId());
@@ -28,9 +28,9 @@ public class borrowMapper {
 	
 	
 	
-	public static borrowRecord toEntity(borrowRecordDto borrowRecordDto,bookEntity book,memberEntity member)
+	public static borrowRecordEntity toEntity(borrowRecordDto borrowRecordDto,bookEntity book,memberEntity member)
 	{
-		borrowRecord record=new borrowRecord();
+		borrowRecordEntity record=new borrowRecordEntity();
 		record.setBook(book);
 		record.setMember(member);
 		record.setBorrowDate(LocalDate.now());

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rohan.Dto.bookDto;
+import com.rohan.Dto.bookResponseDto;
 import com.rohan.Service.bookService;
 
 
@@ -45,7 +46,7 @@ public class bookController {
 	
 	//getAll books in sorting & pagination manner
 	@GetMapping("/books")
-	public ResponseEntity<List<bookDto>> getAllBooks(@RequestParam(defaultValue = "0") int page,@RequestParam(defaultValue = "3") int size,@RequestParam(defaultValue = "author") String sortby)
+	public ResponseEntity<bookResponseDto>getAllBooks(@RequestParam(defaultValue = "2") int page,@RequestParam(defaultValue = "3") int size,@RequestParam(defaultValue = "author") String sortby)
 	{
 	return ResponseEntity.ok(bookservice.getAllBooks(page, size, sortby));
 	}
@@ -57,6 +58,7 @@ public class bookController {
 		return ResponseEntity.ok(bookservice.updateBook(id, bookdto));	
 	}
 	
+	//delete book
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> deleteBook(@PathVariable Long id)
 	{
@@ -64,6 +66,7 @@ public class bookController {
 		return ResponseEntity.ok("Book Deleted Sucessfully");
 	}
 	
+	//get book by keyword(name)
 	@GetMapping("/bykeyword")
 	public List<bookDto> getBookByKeyword(@RequestParam String keyword)
 	{
@@ -71,7 +74,7 @@ public class bookController {
 	}
 	
 	
-	
+	//update book field by id
 	@PatchMapping("/updatebookfield/{id}")
 	public ResponseEntity<Map<String, Object>> updateBookByField(@PathVariable Long id,@RequestParam() String fieldName,@RequestParam String newValue)
 	{

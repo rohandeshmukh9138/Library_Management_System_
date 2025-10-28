@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.rohan.Dto.memberDto;
+import com.rohan.Dto.memberResponseDto;
 import com.rohan.Entity.memberEntity;
 import com.rohan.Mapper.memberMapper;
 import com.rohan.Repo.memberRepo;
@@ -51,7 +53,7 @@ public class memberService {
 	}
 	
 	//get all member in pagination format
-	public List<memberDto> getAllmember(int pageNumber,int pageSize)
+	public memberResponseDto getAllmember(int pageNumber,int pageSize)
 	{
 		
 	  Pageable p=PageRequest.of(pageNumber, pageSize);
@@ -60,7 +62,18 @@ public class memberService {
 	  
 	  List<memberEntity> allmembers= memberentity.getContent();
 	  
-	  return allmembers.stream().map(memberMapper::toDto).collect(Collectors.toList());
+	  List<memberDto> memberdto= allmembers.stream().map(memberMapper::toDto).collect(Collectors.toList());
+	
+	  
+	  memberResponseDto memberresponsedto=new memberResponseDto();
+	  memberresponsedto.setContent(memberdto);
+	  memberresponsedto.setLastPage(memberentity.isLast());
+	  memberresponsedto.setPageNumber(memberentity.getNumber());
+	  memberresponsedto.setTotalElements(memberentity.getTotalElements());
+	  memberresponsedto.setTotalPages(memberentity.getTotalPages());
+	  
+	  return memberresponsedto;
+	  
 	}
 	
 	
@@ -113,5 +126,34 @@ public class memberService {
 		
 		return memberMapper.toDto(memberentity);
 	}
+	
+	
+	
+	//find member by Name
+	public List<memberDto> findMemberByName(String keyword)
+	{
+		
+		List<memberEntity> byNameContainingIgnoreCase = memberrepo.findByNameContainingIgnoreCase(keyword);
+		
+		List<memberDto> collect = byNameContainingIgnoreCase.stream().map(memberMapper::toDto).collect(Collectors.toList());
+		
+		return collect;
+	}
+	
+	
+	
+	public List<memberDto> getRecentAddedMembers()
+	{
+		List<memberEntity> memberentity= memberrepo.findAll();
+
+		return memberentity.stream().sorted((a,b)->b.getId().compareTo(a.getId())).limit(3).map(memberMapper::toDto).collect(Collectors.toList());
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 }
