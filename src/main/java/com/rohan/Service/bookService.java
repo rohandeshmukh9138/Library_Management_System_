@@ -1,7 +1,9 @@
 package com.rohan.Service;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,18 +13,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import com.rohan.Controller.bookController;
+import com.rohan.Controller.borrowController;
 import com.rohan.Dto.bookDto;
 import com.rohan.Dto.bookResponseDto;
 import com.rohan.Entity.bookEntity;
 import com.rohan.Mapper.bookMapper;
 import com.rohan.Repo.bookRepo;
+import com.rohan.Repo.borrowRecordRepo;
 
 @Service
 public class bookService {
 
+    
+
 	@Autowired
 	bookRepo bookrepo;
+	
+	@Autowired
+	borrowRecordRepo borrowrecordrepo;
 	
 	
 	//add book 
@@ -135,5 +144,18 @@ public class bookService {
 		return bookMapper.toDto(bookrepo.save(bookentity));
 	}
 	
+	
+	//to get getAvailableBooks which are not borrowed
+	public List<Map<String, Object>> getAvailableBooks()
+	{
+	 List<Long> borrowedBookId	= borrowrecordrepo.findAll().stream().filter(b-> "Borrowed".equalsIgnoreCase(b.getStatus())).map(b -> b.getBook().getId()).toList();
+	 return bookrepo.findAll().stream().filter(a->!borrowedBookId.contains(a.getId())).map(a-> {
+		 Map<String, Object> map=new HashMap<>();
+		 map.put("Id", a.getId());
+		 map.put("Book", a.getTitle());
+		 
+		 return map;
+	 }).toList();
+	}
 	
 }

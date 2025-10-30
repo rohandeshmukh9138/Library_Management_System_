@@ -86,4 +86,12 @@ public class bookController {
 		
 		return new ResponseEntity<>(map,HttpStatus.OK);
 	}
+	
+	
+	//to get getAvailableBooks which are not borrowed
+	@GetMapping("/getAvailableBooks")
+	public ResponseEntity<List<Map<String, Object>>> getAvailableBooks()
+	{
+		return ResponseEntity.ok(bookservice.getAvailableBooks());
+	}
 }
